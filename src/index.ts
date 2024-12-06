@@ -8,17 +8,21 @@ dotenv.config();
 const __dirname = new URL(".", import.meta.url).pathname;
 
 const main = async () => {
-  const code = fs.readFileSync(
-    path.join(__dirname, "./actions/twitter-auth.js")
-  );
+  const actionPath = path.join(__dirname, "..", "actions", "twitter-auth.js");
+  const code = fs.readFileSync(actionPath);
   console.log("litActionCode:", Buffer.from(code).toString("base64"));
+
   const pinata = new PinataSDK({
     pinataJwt: process.env.PINATA_JWT,
-    endpointUrl: process.env.PINATA_URL,
+    pinataGateway: process.env.PINATA_URL,
   });
-  const file = new File([code.buffer], "twitter-auth.action");
-  const result = await pinata.upload.file(file);
-  
+
+  // Create readable stream from code buffer
+  const stream = fs.createReadStream(actionPath);
+  const result = await pinata.upload.stream(stream).cidVersion(0);
+  const outputPath = path.join(__dirname, "..", "actions", "ipfs.json");
+  fs.writeFileSync(outputPath, JSON.stringify(result, null, 2));
+
   console.log("result:", result);
 };
 
