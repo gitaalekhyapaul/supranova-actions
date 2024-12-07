@@ -400,4 +400,7 @@ declare global {
   const method: string;
   const isDev: boolean;
   const overrideUserID: string;
+  const ipfsCID: string;
+  const ciphertext: string;
+  const dataToEncryptHash: string;
 }
