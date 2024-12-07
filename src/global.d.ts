@@ -327,8 +327,8 @@ declare global {
       function getRpcUrl({ chain }: { chain: string }): Promise<string>;
       /**
        *
-       * @param {string} accessControlConditions  The access control conditions
-       * @param {string} to_encrypt The message to encrypt
+       * @param {object[]} accessControlConditions  The access control conditions
+       * @param {Uint8Array} to_encrypt The message to encrypt
        * @returns { {ciphertext: string, dataToEncryptHash: string} } Contains two items: The ciphertext result after encryption, named "ciphertext" and the dataToEncryptHash, named "dataToEncryptHash"
        */
       function encrypt({
