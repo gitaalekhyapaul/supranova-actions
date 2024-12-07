@@ -14,9 +14,8 @@
     "outDir": "./dist"
   },
   "include": [
-    "./src/**/*",
-    "./global.d.ts"
-  ],
+    "./src/**/*"
+, "src/global.d.ts"  ],
   "exclude": [
     "./dist",
     "./src/actions/**"

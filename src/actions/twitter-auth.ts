@@ -1,3 +1,5 @@
+/// <reference path="../global.d.ts" />
+
 interface TwitterGetMeResponse {
   data: {
     id: string;
@@ -6,29 +8,49 @@ interface TwitterGetMeResponse {
   };
 }
 const authenticate = async (
-  _accessToken: string
+  _accessToken: string,
+  _isDev: boolean
 ): Promise<TwitterGetMeResponse | undefined> => {
-  try {
-    const response = await fetch("https://api.twitter.com/2/users/me", {
-      headers: {
-        Authorization: `Bearer ${_accessToken}`,
+  if (_isDev) {
+    return {
+      data: {
+        id: "1234567890",
+        name: "Test User",
+        username: "testuser",
       },
-    });
-    if (response.ok) {
-      const res = await response.json();
-      console.log("Response from Twitter API:", res);
-      return res;
+    };
+  } else {
+    try {
+      const response = await fetch("https://api.twitter.com/2/users/me", {
+        headers: {
+          Authorization: `Bearer ${_accessToken}`,
+        },
+      });
+      if (response.ok) {
+        const res = await response.json();
+        console.log("Response from Twitter API:", res);
+        return res;
+      }
+      console.error("Error authenticating user", response);
+      return undefined;
+    } catch (error) {
+      console.error("Error authenticating user", error);
+      return undefined;
     }
-    return undefined;
-  } catch (error) {
-    console.error("Error authenticating user", error);
-    return undefined;
   }
+};
+
+const createSupraAccount = async () => {
+  const account = new SupraAccount();
+  console.log("Created Supra account:", account);
+  console.log("newSupraAccount: ", account.address());
+  return account;
 };
 
 const run = async () => {
   console.log("Lit.Auth", Lit.Auth);
-  const userInfo = await authenticate(accessToken);
+  await createSupraAccount();
+  const userInfo = await authenticate(accessToken, isDev);
   console.log("User info from Twitter API:", userInfo);
   if (!userInfo) {
     Lit.Actions.setResponse({ response: "false" });

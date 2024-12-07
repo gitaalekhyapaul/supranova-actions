@@ -398,4 +398,5 @@ declare global {
   // JSParams go here
   const accessToken: string;
   const method: string;
+  const isDev: boolean;
 }
