@@ -14634,10 +14634,16 @@ ${CollectionDataFieldsFragmentDoc}`;
         }
       }
     ];
+    console.log("accessControlConditions:", accessControlConditions);
+    console.log("data:", _data);
     const { ciphertext: ciphertext2, dataToEncryptHash: dataToEncryptHash2 } = await Lit.Actions.encrypt({
-      accessControlConditions: JSON.stringify(accessControlConditions),
+      // accessControlConditions: JSON.stringify(accessControlConditions),
+      //@ts-expect-error
+      accessControlConditions,
       to_encrypt: _data
     });
+    console.log("ciphertext: ", ciphertext2);
+    console.log("dataToEncryptHash: ", dataToEncryptHash2);
     return { ciphertext: ciphertext2, dataToEncryptHash: dataToEncryptHash2 };
   };
   var decryptData = async (_ciphertext, _dataToEncryptHash, _ipfsCid) => {
@@ -14663,22 +14669,6 @@ ${CollectionDataFieldsFragmentDoc}`;
     });
     return decryptedData;
   };
-  (async () => {
-    const method2 = "encrypt";
-    const ipfsCid = "<YOUR_LIT_ACTION_IPFS_CID>";
-    if (method2 === "encrypt") {
-      const data = "Hello world";
-      const result = await encryptData(data, ipfsCid);
-      console.log("Encrypted Result:", result);
-    } else if (method2 === "decrypt") {
-      const ciphertext2 = "<CIPHERTEXT>";
-      const dataToEncryptHash2 = "<DATA_TO_ENCRYPT_HASH>";
-      const result = await decryptData(ciphertext2, dataToEncryptHash2, ipfsCid);
-      console.log("Decrypted Result:", result);
-    } else {
-      console.error('Invalid method. Use "encrypt" or "decrypt".');
-    }
-  })();
   var go = async () => {
     if (method === "createAccount") {
       const account = new SupraAccount();
@@ -14687,7 +14677,7 @@ ${CollectionDataFieldsFragmentDoc}`;
       const privateKeyObject = account.toPrivateKeyObject();
       console.log("privateKeyObject: ", privateKeyObject);
       const encryptedData = await encryptData(
-        privateKeyObject.privateKeyHex,
+        new TextEncoder().encode(privateKeyObject.privateKeyHex),
         ipfsCID
       );
       Lit.Actions.setResponse({

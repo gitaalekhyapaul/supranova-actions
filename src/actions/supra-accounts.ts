@@ -1,4 +1,4 @@
-const encryptData = async (_data, _ipfsCid: string) => {
+const encryptData = async (_data: Uint8Array, _ipfsCid: string) => {
   const accessControlConditions = [
     {
       contractAddress: "",
@@ -12,11 +12,16 @@ const encryptData = async (_data, _ipfsCid: string) => {
       },
     },
   ];
-
+  console.log("accessControlConditions:", accessControlConditions);
+  console.log("data:", _data);
   const { ciphertext, dataToEncryptHash } = await Lit.Actions.encrypt({
-    accessControlConditions: JSON.stringify(accessControlConditions),
+    // accessControlConditions: JSON.stringify(accessControlConditions),
+    //@ts-expect-error
+    accessControlConditions: accessControlConditions,
     to_encrypt: _data,
   });
+  console.log("ciphertext: ", ciphertext);
+  console.log("dataToEncryptHash: ", dataToEncryptHash);
 
   return { ciphertext, dataToEncryptHash };
 };
@@ -51,25 +56,6 @@ const decryptData = async (
   return decryptedData;
 };
 
-// Main function
-(async () => {
-  const method = "encrypt"; // or 'decrypt'
-  const ipfsCid = "<YOUR_LIT_ACTION_IPFS_CID>"; // Replace with your actual IPFS CID
-
-  if (method === "encrypt") {
-    const data = "Hello world";
-    const result = await encryptData(data, ipfsCid);
-    console.log("Encrypted Result:", result);
-  } else if (method === "decrypt") {
-    const ciphertext = "<CIPHERTEXT>"; // Replace with actual ciphertext
-    const dataToEncryptHash = "<DATA_TO_ENCRYPT_HASH>"; // Replace with actual hash
-    const result = await decryptData(ciphertext, dataToEncryptHash, ipfsCid);
-    console.log("Decrypted Result:", result);
-  } else {
-    console.error('Invalid method. Use "encrypt" or "decrypt".');
-  }
-})();
-
 const go = async () => {
   if (method === "createAccount") {
     const account = new SupraAccount();
@@ -78,7 +64,7 @@ const go = async () => {
     const privateKeyObject = account.toPrivateKeyObject();
     console.log("privateKeyObject: ", privateKeyObject);
     const encryptedData = await encryptData(
-      privateKeyObject.privateKeyHex,
+      new TextEncoder().encode(privateKeyObject.privateKeyHex),
       ipfsCID
     );
     Lit.Actions.setResponse({

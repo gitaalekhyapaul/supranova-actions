@@ -26,6 +26,7 @@ const main = async () => {
     const endTime = Date.now();
     const duration = endTime - startTime;
     console.log("🕒 Duration:", duration / 1000, "seconds");
+    console.log("🔗 IPFS CID:", result.IpfsHash);
     results[file] = {
       ...result,
       Duration: duration / 1000,
