@@ -8,22 +8,34 @@ dotenv.config();
 const __dirname = new URL(".", import.meta.url).pathname;
 
 const main = async () => {
-  const actionPath = path.join(__dirname, "..", "actions", "twitter-auth.js");
-  const code = fs.readFileSync(actionPath);
-  console.log("litActionCode:", Buffer.from(code).toString("base64"));
+  const actionsDir = path.join(__dirname, "..", "actions");
+  const files = fs.readdirSync(actionsDir).filter((f) => f.endsWith(".js"));
+  const results = {};
 
   const pinata = new PinataSDK({
     pinataJwt: process.env.PINATA_JWT,
     pinataGateway: process.env.PINATA_URL,
   });
 
-  // Create readable stream from code buffer
-  const stream = fs.createReadStream(actionPath);
-  const result = await pinata.upload.stream(stream).cidVersion(0);
-  const outputPath = path.join(__dirname, "..", "actions", "ipfs.json");
-  fs.writeFileSync(outputPath, JSON.stringify(result, null, 2));
+  for (const file of files) {
+    const filePath = path.join(actionsDir, file);
+    console.log("📁 Pinning file to IPFS:", filePath);
+    const startTime = Date.now();
+    const stream = fs.createReadStream(filePath);
+    const result = await pinata.upload.stream(stream).cidVersion(0);
+    const endTime = Date.now();
+    const duration = endTime - startTime;
+    console.log("🕒 Duration:", duration / 1000, "seconds");
+    results[file] = {
+      ...result,
+      Duration: duration / 1000,
+    };
+  }
 
-  console.log("result:", result);
+  const outputPath = path.join(actionsDir, "ipfs.json");
+  fs.writeFileSync(outputPath, JSON.stringify(results, null, 2));
+  console.log("🔥 Results:", results);
+  console.log("✅ Done, output written to:", outputPath);
 };
 
 main()

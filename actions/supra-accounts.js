@@ -4356,8 +4356,8 @@
           }
         }
       };
-      utils_default.forEach(["delete", "get", "head", "post", "put", "patch"], (method2) => {
-        defaults.headers[method2] = {};
+      utils_default.forEach(["delete", "get", "head", "post", "put", "patch"], (method) => {
+        defaults.headers[method] = {};
       });
       defaults_default = defaults;
     }
@@ -5452,7 +5452,7 @@
       fetch_default = isFetchSupported && (async (config) => {
         let {
           url,
-          method: method2,
+          method,
           data,
           signal,
           cancelToken,
@@ -5475,7 +5475,7 @@
         };
         let requestContentLength;
         try {
-          if (onUploadProgress && supportsRequestStream && method2 !== "get" && method2 !== "head" && (requestContentLength = await resolveBodyLength(headers, data)) !== 0) {
+          if (onUploadProgress && supportsRequestStream && method !== "get" && method !== "head" && (requestContentLength = await resolveBodyLength(headers, data)) !== 0) {
             let _request = new Request(url, {
               method: "POST",
               body: data,
@@ -5499,7 +5499,7 @@
           request2 = new Request(url, {
             ...fetchOptions,
             signal: composedSignal,
-            method: method2.toUpperCase(),
+            method: method.toUpperCase(),
             headers: headers.normalize().toJSON(),
             body: data,
             duplex: "half",
@@ -5839,8 +5839,8 @@
           );
           headers && utils_default.forEach(
             ["delete", "get", "head", "post", "put", "patch", "common"],
-            (method2) => {
-              delete headers[method2];
+            (method) => {
+              delete headers[method];
             }
           );
           config.headers = AxiosHeaders_default.concat(contextHeaders, headers);
@@ -5902,20 +5902,20 @@
           return buildURL(fullPath, config.params, config.paramsSerializer);
         }
       };
-      utils_default.forEach(["delete", "get", "head", "options"], function forEachMethodNoData(method2) {
-        Axios.prototype[method2] = function(url, config) {
+      utils_default.forEach(["delete", "get", "head", "options"], function forEachMethodNoData(method) {
+        Axios.prototype[method] = function(url, config) {
           return this.request(mergeConfig(config || {}, {
-            method: method2,
+            method,
             url,
             data: (config || {}).data
           }));
         };
       });
-      utils_default.forEach(["post", "put", "patch"], function forEachMethodWithData(method2) {
+      utils_default.forEach(["post", "put", "patch"], function forEachMethodWithData(method) {
         function generateHTTPMethod(isForm) {
           return function httpMethod(url, data, config) {
             return this.request(mergeConfig(config || {}, {
-              method: method2,
+              method,
               headers: isForm ? {
                 "Content-Type": "multipart/form-data"
               } : {},
@@ -5924,8 +5924,8 @@
             }));
           };
         }
-        Axios.prototype[method2] = generateHTTPMethod();
-        Axios.prototype[method2 + "Form"] = generateHTTPMethod(true);
+        Axios.prototype[method] = generateHTTPMethod();
+        Axios.prototype[method + "Form"] = generateHTTPMethod(true);
       });
       Axios_default = Axios;
     }
@@ -6217,10 +6217,10 @@
   // node_modules/@aptos-labs/aptos-client/dist/browser/index.browser.mjs
   async function aptosClient(options) {
     var _a;
-    const { params, method: method2, url, headers, body, overrides } = options;
+    const { params, method, url, headers, body, overrides } = options;
     const requestConfig = {
       headers,
-      method: method2,
+      method,
       url,
       params,
       data: body,
@@ -6543,7 +6543,7 @@
       return returnedValue;
     };
   }
-  async function request(url, method2, body, contentType, params, overrides) {
+  async function request(url, method, body, contentType, params, overrides) {
     const headers = {
       ...overrides == null ? void 0 : overrides.HEADERS,
       "x-aptos-client": `aptos-ts-sdk/${VERSION3}`,
@@ -6552,13 +6552,13 @@
     if (overrides == null ? void 0 : overrides.TOKEN) {
       headers.Authorization = `Bearer ${overrides == null ? void 0 : overrides.TOKEN}`;
     }
-    const response = await aptosClient({ url, method: method2, body, params, headers, overrides });
+    const response = await aptosClient({ url, method, body, params, headers, overrides });
     return response;
   }
   async function aptosRequest(options) {
-    const { url, endpoint, method: method2, body, contentType, params, overrides } = options;
+    const { url, endpoint, method, body, contentType, params, overrides } = options;
     const fullEndpoint = `${url}/${endpoint != null ? endpoint : ""}`;
-    const response = await request(fullEndpoint, method2, body, contentType, params, overrides);
+    const response = await request(fullEndpoint, method, body, contentType, params, overrides);
     const result = {
       status: response.status,
       statusText: response.statusText,
@@ -11618,58 +11618,58 @@ ${CollectionDataFieldsFragmentDoc}`;
             return methods["kmac" + bits2].update(key, message, outputBits, s)[outputType]();
           };
         };
-        var createOutputMethods = function(method2, createMethod2, bits2, padding) {
+        var createOutputMethods = function(method, createMethod2, bits2, padding) {
           for (var i2 = 0; i2 < OUTPUT_TYPES.length; ++i2) {
             var type = OUTPUT_TYPES[i2];
-            method2[type] = createMethod2(bits2, padding, type);
+            method[type] = createMethod2(bits2, padding, type);
           }
-          return method2;
+          return method;
         };
         var createMethod = function(bits2, padding) {
-          var method2 = createOutputMethod(bits2, padding, "hex");
-          method2.create = function() {
+          var method = createOutputMethod(bits2, padding, "hex");
+          method.create = function() {
             return new Keccak2(bits2, padding, bits2);
           };
-          method2.update = function(message) {
-            return method2.create().update(message);
+          method.update = function(message) {
+            return method.create().update(message);
           };
-          return createOutputMethods(method2, createOutputMethod, bits2, padding);
+          return createOutputMethods(method, createOutputMethod, bits2, padding);
         };
         var createShakeMethod = function(bits2, padding) {
-          var method2 = createShakeOutputMethod(bits2, padding, "hex");
-          method2.create = function(outputBits) {
+          var method = createShakeOutputMethod(bits2, padding, "hex");
+          method.create = function(outputBits) {
             return new Keccak2(bits2, padding, outputBits);
           };
-          method2.update = function(message, outputBits) {
-            return method2.create(outputBits).update(message);
+          method.update = function(message, outputBits) {
+            return method.create(outputBits).update(message);
           };
-          return createOutputMethods(method2, createShakeOutputMethod, bits2, padding);
+          return createOutputMethods(method, createShakeOutputMethod, bits2, padding);
         };
         var createCshakeMethod = function(bits2, padding) {
           var w2 = CSHAKE_BYTEPAD[bits2];
-          var method2 = createCshakeOutputMethod(bits2, padding, "hex");
-          method2.create = function(outputBits, n, s) {
+          var method = createCshakeOutputMethod(bits2, padding, "hex");
+          method.create = function(outputBits, n, s) {
             if (empty(n) && empty(s)) {
               return methods["shake" + bits2].create(outputBits);
             } else {
               return new Keccak2(bits2, padding, outputBits).bytepad([n, s], w2);
             }
           };
-          method2.update = function(message, outputBits, n, s) {
-            return method2.create(outputBits, n, s).update(message);
+          method.update = function(message, outputBits, n, s) {
+            return method.create(outputBits, n, s).update(message);
           };
-          return createOutputMethods(method2, createCshakeOutputMethod, bits2, padding);
+          return createOutputMethods(method, createCshakeOutputMethod, bits2, padding);
         };
         var createKmacMethod = function(bits2, padding) {
           var w2 = CSHAKE_BYTEPAD[bits2];
-          var method2 = createKmacOutputMethod(bits2, padding, "hex");
-          method2.create = function(key, outputBits, s) {
+          var method = createKmacOutputMethod(bits2, padding, "hex");
+          method.create = function(key, outputBits, s) {
             return new Kmac(bits2, padding, outputBits).bytepad(["KMAC", s], w2).bytepad([key], w2);
           };
-          method2.update = function(key, message, outputBits, s) {
-            return method2.create(key, outputBits, s).update(message);
+          method.update = function(key, message, outputBits, s) {
+            return method.create(key, outputBits, s).update(message);
           };
-          return createOutputMethods(method2, createKmacOutputMethod, bits2, padding);
+          return createOutputMethods(method, createKmacOutputMethod, bits2, padding);
         };
         var algorithms = [
           { name: "keccak", padding: KECCAK_PADDING, bits: BITS, createMethod },
@@ -12243,58 +12243,58 @@ ${CollectionDataFieldsFragmentDoc}`;
             return methods["kmac" + bits2].update(key, message, outputBits, s)[outputType]();
           };
         };
-        var createOutputMethods = function(method2, createMethod2, bits2, padding) {
+        var createOutputMethods = function(method, createMethod2, bits2, padding) {
           for (var i2 = 0; i2 < OUTPUT_TYPES.length; ++i2) {
             var type = OUTPUT_TYPES[i2];
-            method2[type] = createMethod2(bits2, padding, type);
+            method[type] = createMethod2(bits2, padding, type);
           }
-          return method2;
+          return method;
         };
         var createMethod = function(bits2, padding) {
-          var method2 = createOutputMethod(bits2, padding, "hex");
-          method2.create = function() {
+          var method = createOutputMethod(bits2, padding, "hex");
+          method.create = function() {
             return new Keccak2(bits2, padding, bits2);
           };
-          method2.update = function(message) {
-            return method2.create().update(message);
+          method.update = function(message) {
+            return method.create().update(message);
           };
-          return createOutputMethods(method2, createOutputMethod, bits2, padding);
+          return createOutputMethods(method, createOutputMethod, bits2, padding);
         };
         var createShakeMethod = function(bits2, padding) {
-          var method2 = createShakeOutputMethod(bits2, padding, "hex");
-          method2.create = function(outputBits) {
+          var method = createShakeOutputMethod(bits2, padding, "hex");
+          method.create = function(outputBits) {
             return new Keccak2(bits2, padding, outputBits);
           };
-          method2.update = function(message, outputBits) {
-            return method2.create(outputBits).update(message);
+          method.update = function(message, outputBits) {
+            return method.create(outputBits).update(message);
           };
-          return createOutputMethods(method2, createShakeOutputMethod, bits2, padding);
+          return createOutputMethods(method, createShakeOutputMethod, bits2, padding);
         };
         var createCshakeMethod = function(bits2, padding) {
           var w2 = CSHAKE_BYTEPAD[bits2];
-          var method2 = createCshakeOutputMethod(bits2, padding, "hex");
-          method2.create = function(outputBits, n, s) {
+          var method = createCshakeOutputMethod(bits2, padding, "hex");
+          method.create = function(outputBits, n, s) {
             if (!n && !s) {
               return methods["shake" + bits2].create(outputBits);
             } else {
               return new Keccak2(bits2, padding, outputBits).bytepad([n, s], w2);
             }
           };
-          method2.update = function(message, outputBits, n, s) {
-            return method2.create(outputBits, n, s).update(message);
+          method.update = function(message, outputBits, n, s) {
+            return method.create(outputBits, n, s).update(message);
           };
-          return createOutputMethods(method2, createCshakeOutputMethod, bits2, padding);
+          return createOutputMethods(method, createCshakeOutputMethod, bits2, padding);
         };
         var createKmacMethod = function(bits2, padding) {
           var w2 = CSHAKE_BYTEPAD[bits2];
-          var method2 = createKmacOutputMethod(bits2, padding, "hex");
-          method2.create = function(key, outputBits, s) {
+          var method = createKmacOutputMethod(bits2, padding, "hex");
+          method.create = function(key, outputBits, s) {
             return new Kmac(bits2, padding, outputBits).bytepad(["KMAC", s], w2).bytepad([key], w2);
           };
-          method2.update = function(key, message, outputBits, s) {
-            return method2.create(key, outputBits, s).update(message);
+          method.update = function(key, message, outputBits, s) {
+            return method.create(key, outputBits, s).update(message);
           };
-          return createOutputMethods(method2, createKmacOutputMethod, bits2, padding);
+          return createOutputMethods(method, createKmacOutputMethod, bits2, padding);
         };
         var algorithms = [
           { name: "keccak", padding: KECCAK_PADDING, bits: BITS, createMethod },
@@ -14618,59 +14618,15 @@ ${CollectionDataFieldsFragmentDoc}`;
     }
   });
 
-  // src/actions/twitter-auth.ts
+  // src/actions/supra-accounts.ts
   init_supra_shim();
-  var authenticate = async (_accessToken, _isDev, _overrideUserID) => {
-    if (_isDev) {
-      return {
-        data: {
-          id: _overrideUserID,
-          name: `Dev Mode User ${_overrideUserID}`,
-          username: `devuser-${_overrideUserID}`
-        }
-      };
-    } else {
-      try {
-        const response = await fetch("https://api.twitter.com/2/users/me", {
-          headers: {
-            Authorization: `Bearer ${_accessToken}`
-          }
-        });
-        if (response.ok) {
-          const res = await response.json();
-          console.log("Response from Twitter API:", res);
-          return res;
-        }
-        console.error("Error authenticating user", response);
-        return void 0;
-      } catch (error) {
-        console.error("Error authenticating user", error);
-        return void 0;
-      }
-    }
+  var go = async () => {
+    const account = new SupraAccount();
+    console.log("Created Supra account:", account);
+    console.log("newSupraAccount: ", account.address().toString());
+    Lit.Actions.setResponse({ response: account.address().toString() });
   };
-  var run = async () => {
-    console.log("Lit.Auth", Lit.Auth);
-    const userInfo = await authenticate(accessToken, isDev, overrideUserID);
-    console.log("User info from Twitter API:", userInfo);
-    if (!userInfo) {
-      Lit.Actions.setResponse({ response: "false" });
-      return;
-    }
-    if (method === "claimKey") {
-      const userId = userInfo.data.id;
-      console.log("Claiming key for Twitter user %s", userId);
-      await Lit.Actions.claimKey({
-        keyId: userId
-      });
-      Lit.Actions.setResponse({ response: "true" });
-      return;
-    } else {
-      Lit.Actions.setResponse({ response: "true" });
-      return;
-    }
-  };
-  run();
+  go();
 })();
 /*! Bundled license information:
 

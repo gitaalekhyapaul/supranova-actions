@@ -41,29 +41,23 @@ const authenticate = async (
   }
 };
 
-const createSupraAccount = async () => {
-  const account = new SupraAccount();
-  console.log("newSupraAccount: ", account.address());
-  return account;
-};
-
 const run = async () => {
   console.log("Lit.Auth", Lit.Auth);
-  await createSupraAccount();
   const userInfo = await authenticate(accessToken, isDev, overrideUserID);
   console.log("User info from Twitter API:", userInfo);
   if (!userInfo) {
     Lit.Actions.setResponse({ response: "false" });
     return;
   }
-  const ipfsActionId = Lit.Auth.actionIpfsIds[0];
-  // can't authorize if we're claiming a key, just authenticate
   if (method === "claimKey") {
     const userId = userInfo.data.id;
     console.log("Claiming key for Twitter user %s", userId);
     await Lit.Actions.claimKey({
       keyId: userId,
     });
+    Lit.Actions.setResponse({ response: "true" });
+    return;
+  } else {
     Lit.Actions.setResponse({ response: "true" });
     return;
   }
