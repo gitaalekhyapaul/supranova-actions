@@ -9,14 +9,15 @@ interface TwitterGetMeResponse {
 }
 const authenticate = async (
   _accessToken: string,
-  _isDev: boolean
+  _isDev: boolean,
+  _overrideUserID: string
 ): Promise<TwitterGetMeResponse | undefined> => {
   if (_isDev) {
     return {
       data: {
-        id: "1234567890",
-        name: "Test User",
-        username: "testuser",
+        id: _overrideUserID,
+        name: `Dev Mode User ${_overrideUserID}`,
+        username: `devuser-${_overrideUserID}`,
       },
     };
   } else {
@@ -42,7 +43,6 @@ const authenticate = async (
 
 const createSupraAccount = async () => {
   const account = new SupraAccount();
-  console.log("Created Supra account:", account);
   console.log("newSupraAccount: ", account.address());
   return account;
 };
@@ -50,7 +50,7 @@ const createSupraAccount = async () => {
 const run = async () => {
   console.log("Lit.Auth", Lit.Auth);
   await createSupraAccount();
-  const userInfo = await authenticate(accessToken, isDev);
+  const userInfo = await authenticate(accessToken, isDev, overrideUserID);
   console.log("User info from Twitter API:", userInfo);
   if (!userInfo) {
     Lit.Actions.setResponse({ response: "false" });

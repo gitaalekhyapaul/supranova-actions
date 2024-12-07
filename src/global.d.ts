@@ -399,4 +399,5 @@ declare global {
   const accessToken: string;
   const method: string;
   const isDev: boolean;
+  const overrideUserID: string;
 }
