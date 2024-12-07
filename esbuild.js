@@ -106,7 +106,7 @@ const promises = configs.map((config) => {
     external: ["ethers"],
     plugins: [wrapIIFEInStringPlugin],
     ...(config?.injectedValues && { inject: config?.injectedValues }),
-    inject: ["supra.shim.js"],
+    inject: ["supra.shim.js", "buffer.shim.js"],
   });
 });
 

@@ -50,16 +50,16 @@ const decryptData = async (
     authSig: null,
     chain: "ethereum",
   });
-  console.log("decryptedData: ", decryptedData);
+  console.log("decryptedData: ", decryptedData.slice(2));
 
-  return decryptedData;
+  return decryptedData.slice(2);
 };
 
 const go = async () => {
-  const result = await Lit.Actions.runOnce(
-    { waitForResponse: true, name: "encryptedPrivateKey" },
-    async () => {
-      if (method === "createAccount") {
+  if (method === "createAccount") {
+    const result = await Lit.Actions.runOnce(
+      { waitForResponse: true, name: "encryptedPrivateKey" },
+      async () => {
         const account = new SupraAccount();
         const accountAddress = account.address().toString();
         console.log("newSupraAccount: ", accountAddress);
@@ -70,26 +70,27 @@ const go = async () => {
           ipfsCID
         );
         return JSON.stringify({ ...encryptedData, accountAddress });
-      } else {
-        const decryptedData = await decryptData(
-          ciphertext,
-          dataToEncryptHash,
-          ipfsCID
-        );
-        if (!decryptedData) {
-          // silently return for nodes which do not have the decrypted key
-          return;
-        }
-        const account = new SupraAccount(Buffer.from(decryptedData, "hex"));
-        const accountAddress = account.address().toString();
-        console.log("account: ", accountAddress);
-
-        return JSON.stringify({ accountAddress });
       }
+    );
+    Lit.Actions.setResponse({
+      response: result,
+    });
+  } else {
+    const decryptedData = await decryptData(
+      ciphertext,
+      dataToEncryptHash,
+      ipfsCID
+    );
+    if (!decryptedData) {
+      // silently return for nodes which do not have the decrypted key
+      return;
     }
-  );
-  Lit.Actions.setResponse({
-    response: result,
-  });
+    const account = new SupraAccount(Buffer.from(decryptedData, "hex"));
+    const accountAddress = account.address().toString();
+    console.log("account: ", accountAddress);
+    Lit.Actions.setResponse({
+      response: JSON.stringify({ accountAddress }),
+    });
+  }
 };
 go();
