@@ -3,13 +3,14 @@
     "IpfsHash": "QmWJerRYebTcm3P6Gk7HUiBKKbjia8LJJ8KdcZDj4ysr8J",
     "PinSize": 643882,
     "Timestamp": "2024-12-07T21:24:29.365Z",
-    "Duration": 6.816
+    "isDuplicate": true,
+    "Duration": 6.699
   },
   "twitter-auth.js": {
     "IpfsHash": "QmRymKnaCZK6zYjqih5U2nKtSv4hVJJFN4UfxARhYyihSR",
     "PinSize": 640263,
     "Timestamp": "2024-12-07T13:59:38.305Z",
     "isDuplicate": true,
-    "Duration": 4.632
+    "Duration": 4.293
   }
 }
