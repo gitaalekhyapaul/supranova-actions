@@ -98,7 +98,7 @@ const go = async () => {
       name: tokenName,
       symbol: tokenSymbol,
       tokenType,
-      tokenOwner: accountAddress,
+      tokenOwnerPrivateKey: privateKey,
     };
     console.log("apiPayload: ", apiPayload);
     console.log("tokenApiUrl: ", tokenApiUrl);
