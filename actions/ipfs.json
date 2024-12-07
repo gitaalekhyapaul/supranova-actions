@@ -1,15 +1,15 @@
 {
   "supra-accounts.js": {
-    "IpfsHash": "Qmd6U63pCjj6AzpFuxLSfxY7ov6v67MpnYYGyN1MFsjQZU",
-    "PinSize": 642591,
-    "Timestamp": "2024-12-07T17:50:47.471Z",
-    "Duration": 14.848
+    "IpfsHash": "QmeVs1JEH8xeccHQKg4N4ydgPXAKNHAep21KTuWetxB9rc",
+    "PinSize": 644874,
+    "Timestamp": "2024-12-07T20:53:56.535Z",
+    "Duration": 13.897
   },
   "twitter-auth.js": {
     "IpfsHash": "QmRymKnaCZK6zYjqih5U2nKtSv4hVJJFN4UfxARhYyihSR",
     "PinSize": 640263,
     "Timestamp": "2024-12-07T13:59:38.305Z",
     "isDuplicate": true,
-    "Duration": 9.832
+    "Duration": 9.362
   }
 }
