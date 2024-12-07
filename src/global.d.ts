@@ -266,7 +266,7 @@ declare global {
       function broadcastAndCollect({ name, value }: string): string;
       /**
    * Decrypt and combine the provided
-   * @param {string} accessControlConditions The access control conditions
+   * @param {object[]} accessControlConditions The access control conditions
    * @param {string} ciphertext The ciphertext to decrypt
    * @param {string} dataToEncryptHash The hash of the data to <encrypt />
    @ @param {string} authSig The auth signature
@@ -282,7 +282,7 @@ declare global {
       }: string): string;
       /**
    * Decrypt to a single node.
-   * @param {string} accessControlConditions The access control conditions
+   * @param {object[]} accessControlConditions The access control conditions
    * @param {string} ciphertext The ciphertext to decrypt
    * @param {string} dataToEncryptHash The hash of the data to <encrypt />
    @ @param { any} authSig The auth signature
@@ -296,7 +296,7 @@ declare global {
         authSig,
         chain,
       }: {
-        accessControlConditions: string;
+        accessControlConditions: object[];
         ciphertext: string;
         dataToEncryptHash: string;
         chain: string;
@@ -335,7 +335,7 @@ declare global {
         accessControlConditions,
         to_encrypt,
       }: {
-        accessControlConditions: string;
+        accessControlConditions: object[];
         to_encrypt: Uint8Array;
       }): {
         ciphertext: string;
@@ -403,4 +403,8 @@ declare global {
   const ipfsCID: string;
   const ciphertext: string;
   const dataToEncryptHash: string;
+  const tokenName: string;
+  const tokenSymbol: string;
+  const tokenType: string;
+  const tokenApiUrl: string;
 }

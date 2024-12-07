@@ -1,3 +1,5 @@
+/// <reference path="../global.d.ts" />
+
 const encryptData = async (_data: Uint8Array, _ipfsCid: string) => {
   const accessControlConditions = [
     {
@@ -75,7 +77,7 @@ const go = async () => {
     Lit.Actions.setResponse({
       response: result,
     });
-  } else {
+  } else if (method === "mintToken") {
     const decryptedData = await decryptData(
       ciphertext,
       dataToEncryptHash,
@@ -85,12 +87,44 @@ const go = async () => {
       // silently return for nodes which do not have the decrypted key
       return;
     }
+    const privateKey = decryptedData;
+    console.log("privateKey: ", privateKey);
     const account = new SupraAccount(Buffer.from(decryptedData, "hex"));
     const accountAddress = account.address().toString();
     console.log("account: ", accountAddress);
-    Lit.Actions.setResponse({
-      response: JSON.stringify({ accountAddress }),
+    const apiPayload = {
+      name: tokenName,
+      symbol: tokenSymbol,
+      tokenType,
+      tokenOwner: accountAddress,
+    };
+    console.log("apiPayload: ", apiPayload);
+    console.log("tokenApiUrl: ", tokenApiUrl);
+    const _res = await fetch(`${tokenApiUrl}/api/tokens/create`, {
+      method: "POST",
+      body: JSON.stringify(apiPayload),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+    if (!_res.ok) {
+      console.log("error response from Token mint API: ", await _res.json());
+      Lit.Actions.setResponse({
+        response: "false",
+      });
+      return;
+    }
+    const response = await _res.json();
+    console.log("response from Token mint API: ", response);
+    Lit.Actions.setResponse({
+      response: JSON.stringify({ ...response }),
+    });
+  } else {
+    console.log("method not found");
+    Lit.Actions.setResponse({
+      response: "method not found",
+    });
+    return;
   }
 };
 go();
