@@ -121,7 +121,7 @@ const go = async () => {
     Lit.Actions.setResponse({
       response: JSON.stringify({ ...response }),
     });
-  } else if (method === "transfer") {
+  } else if (method === "claimToken") {
     const decryptedData = await decryptData(
       ciphertext,
       dataToEncryptHash,
@@ -137,14 +137,12 @@ const go = async () => {
     const accountAddress = account.address().toString();
     console.log("account: ", accountAddress);
     const apiPayload = {
-      name: tokenName,
-      symbol: tokenSymbol,
       tokenType,
-      tokenOwnerPrivateKey: privateKey,
+      userPrivateKey: privateKey,
     };
     console.log("apiPayload: ", apiPayload);
     console.log("tokenApiUrl: ", tokenApiUrl);
-    const _res = await fetch(`${tokenApiUrl}/api/tokens/create`, {
+    const _res = await fetch(`${tokenApiUrl}/api/tokens/claim`, {
       method: "POST",
       body: JSON.stringify(apiPayload),
       headers: {
@@ -152,42 +150,16 @@ const go = async () => {
       },
     });
     if (!_res.ok) {
-      console.log("error response from Token mint API: ", await _res.json());
+      console.log("error response from Token claim API: ", await _res.json());
       Lit.Actions.setResponse({
         response: "false",
       });
       return;
     }
     const response = await _res.json();
-    console.log("response from Token mint API: ", response);
+    console.log("response from Token claim API: ", response);
     Lit.Actions.setResponse({
       response: JSON.stringify({ ...response }),
-    });
-  } else if (method === "getBalance") {
-    console.log("getBalance");
-    const decryptedData = await decryptData(
-      ciphertext,
-      dataToEncryptHash,
-      ipfsCID
-    );
-    if (!decryptedData) {
-      // silently return for nodes which do not have the decrypted key
-      return;
-    }
-    const privateKey = decryptedData;
-    console.log("privateKey: ", privateKey);
-    const account = new SupraAccount(Buffer.from(decryptedData, "hex"));
-    const accountAddress = account.address();
-    console.log("accountAddress: ", accountAddress.toString());
-    const client = new SupraClient("https://rpc-testnet.supra.com/");
-    const balance = await client.getAccountSupraCoinBalance(accountAddress);
-    console.log("balance: ", balance);
-    const tx = await client.getAccountTransactionsDetail(accountAddress, {
-      count: 3,
-    });
-    console.log("tx: ", tx);
-    Lit.Actions.setResponse({
-      response: JSON.stringify({ balance, tx }),
     });
   } else {
     console.log("method not found");
